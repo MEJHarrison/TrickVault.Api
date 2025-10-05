@@ -1,8 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using TrickVault.Api.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Connection String & setup DbContext
+var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionString");
+builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseSqlServer(connectionString));
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
