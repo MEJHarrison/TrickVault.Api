@@ -3,11 +3,11 @@ using TrickVault.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+
 // Configure Connection String & setup DbContext
 var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionString");
 builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseSqlServer(connectionString));
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 

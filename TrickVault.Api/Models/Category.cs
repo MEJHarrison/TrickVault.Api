@@ -1,4 +1,6 @@
-﻿namespace TrickVault.Api.Models
+﻿using System.Text.Json.Serialization;
+
+namespace TrickVault.Api.Models
 {
     public class Category
     {
@@ -6,6 +8,7 @@
         public required string Name { get; set; }
         public string? Description { get; set; }
 
+        [JsonIgnore]
         public ICollection<Trick> Tricks { get; set; } = new List<Trick>();
     }
 }

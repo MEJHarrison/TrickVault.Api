@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using TrickVault.Api.Models;
 
-namespace TrickVault.Api.Models
+namespace TrickVault.Api.DTOs.Trick
 {
-    public class Trick
+    public class CreateTrickDto
     {
-        public int Id { get; set; }
+        [Required]
         public required string Title { get; set; }
         public string? Effect { get; set; }
         public string? Setup { get; set; }
@@ -13,8 +15,6 @@ namespace TrickVault.Api.Models
         public string? Comments { get; set; }
         public string? Credits { get; set; }
 
-        public ICollection<Category> Categories { get; set; } = new List<Category>();
-        [NotMapped]
         public List<int> CategoryIds { get; set; } = new();
     }
-}
+ }

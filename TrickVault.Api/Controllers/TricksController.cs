@@ -1,34 +1,51 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TrickVault.Api.Data;
+using TrickVault.Api.DTOs.Category;
+using TrickVault.Api.DTOs.Trick;
 using TrickVault.Api.Models;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TrickVault.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TricksController : ControllerBase
+    public class TricksController(TrickVaultDbContext context) : ControllerBase
     {
-        private static List<Trick> tricks = new List<Trick>
-        {
-            new Trick { Id = 1, Title = "Pull Rabbit from Hat", Effect = "The magician shows an empty hat, then pulls a rabbit out of it", Setup = "Put rabbit in hat", Method = "Magician shows an empty hat, then reaches into secret compartment and removes hidden rabbit", Patter = "Look, the hat is completely empty. Except for this here ribbit!", Comments = "This is great with children.", Credits = "Many poor magicians." },
-            new Trick { Id = 2, Title = "Pick a Card", Effect = "Magician has audiende member select a random card. The card is shuffled back into the deck. Then the magician finds the selected card.", Method = "Spectator selects a card. The card is returned to the deck and the deck is then shuffled. Then through secret means (not given here), the magician is able to find the selected card.", Patter = "Pick a card, any card! Show the audience. Now put it back anywhere in the deck. I'm going to shuffle the cards a few times. Now, I couldn't possibly know the location of your card, rght? Yet here it is!" }
-        };
-
-        // GET: api/<TricksController>
+        // GET: api/Tricks
         [HttpGet]
-        public ActionResult<IEnumerable<Trick>> Get()
+        public async Task<ActionResult<IEnumerable<GetTricksDto>>> GetTricks()
         {
+            var tricks = await context.Tricks
+                .AsNoTracking()
+                .Select(t => new GetTricksDto(t.Id, t.Title))
+                .ToListAsync();
+
             return Ok(tricks);
         }
 
-        // GET api/<TricksController>/5
+        // GET: api/Tricks/5
         [HttpGet("{id}")]
-        public ActionResult<Trick> Get(int id)
+        public async Task<ActionResult<GetTrickDto>> GetTrick(int id)
         {
-            var trick = tricks.FirstOrDefault(t => t.Id == id);
+            var trick = await context.Tricks
+                .AsNoTracking()
+                .Where(t => t.Id == id)
+                .Select(t => new GetTrickDto(
+                    t.Id,
+                    t.Title,
+                    t.Effect,
+                    t.Setup,
+                    t.Method,
+                    t.Patter,
+                    t.Comments,
+                    t.Credits,
+                    t.Categories
+                        .Select(c => new GetCategoryDto(c.Id, c.Name, c.Description))
+                        .ToList()
+                ))
+                .FirstOrDefaultAsync();
 
-            if (trick is null)
+            if (trick == null)
             {
                 return NotFound();
             }
@@ -36,56 +53,132 @@ namespace TrickVault.Api.Controllers
             return Ok(trick);
         }
 
-        // POST api/<TricksController>
+        // POST: api/Tricks
         [HttpPost]
-        public ActionResult<Trick> Post([FromBody] Trick newTrick)
+        public async Task<ActionResult<GetTrickDto>> PostTrick(CreateTrickDto createTrickDto)
         {
-            if (tricks.Any(t => t.Id == newTrick.Id))
+            var trick = new Trick
             {
-                return BadRequest("That trick already exists.");
+                Title = createTrickDto.Title,
+                Effect = createTrickDto.Effect,
+                Setup = createTrickDto.Setup,
+                Method = createTrickDto.Method,
+                Patter = createTrickDto.Patter,
+                Comments = createTrickDto.Comments,
+                Credits = createTrickDto.Credits,
+                //CategoryIds = createTrickDto.CategoryIds
+            };
+
+            if (createTrickDto.CategoryIds.Any())
+            {
+                var categories = await context.Categories
+                    .Where(c => createTrickDto.CategoryIds.Contains(c.Id))
+                    .ToListAsync();
+
+                foreach (var category in categories)
+                {
+                    trick.Categories.Add(category);
+                }
             }
 
-            tricks.Add(newTrick);
+            context.Tricks.Add(trick);
+            await context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = newTrick.Id }, newTrick);
+            //return CreatedAtAction("GetTrick", new { id = trick.Id }, trick);
+            return CreatedAtAction(
+                nameof(GetTrick),
+                new { id = trick.Id },
+                new GetTrickDto(
+                    trick.Id,
+                    trick.Title,
+                    trick.Effect,
+                    trick.Setup,
+                    trick.Method,
+                    trick.Patter,
+                    trick.Comments,
+                    trick.Credits,
+                    trick.Categories.Select(c => new GetCategoryDto(c.Id, c.Name, c.Description)).ToList()
+                )
+            );
         }
 
-        // PUT api/<TricksController>/5
+        // PUT: api/Tricks/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] Trick trick)
+        public async Task<IActionResult> PutTrick(int id, UpdateTrickDto updateTrickDto)
         {
-            var existingTrick = tricks.FirstOrDefault(trick => trick.Id == id);
-
-            if (existingTrick is null)
+            if (id != updateTrickDto.Id)
             {
-                return NotFound(new { message = "Trick not found." });
+                return BadRequest();
             }
 
-            existingTrick.Title = trick.Title;
-            existingTrick.Effect = trick.Effect;
-            existingTrick.Setup = trick.Setup;
-            existingTrick.Method = trick.Method;
-            existingTrick.Patter = trick.Patter;
-            existingTrick.Comments = trick.Comments;
-            existingTrick.Credits = trick.Credits;
-
-            return NoContent();
-        }
-
-        // DELETE api/<TricksController>/5
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
-        {
-            var trick = tricks.FirstOrDefault(trick => trick.Id == id);
-
+            var trick = await context.Tricks
+                .Include(t => t.Categories)
+                .FirstOrDefaultAsync(t => t.Id == id);
             if (trick is null)
             {
-                return NotFound(new { message = "Trick not found." });
+                return NotFound();
             }
 
-            tricks.Remove(trick);
+            trick.Title = updateTrickDto.Title;
+            trick.Effect = updateTrickDto.Effect;
+            trick.Setup = updateTrickDto.Setup;
+            trick.Method = updateTrickDto.Method;
+            trick.Patter = updateTrickDto.Patter;
+            trick.Comments = updateTrickDto.Comments;
+            trick.Credits = updateTrickDto.Credits;
+
+            trick.Categories.Clear();
+
+            if (updateTrickDto.CategoryIds.Any())
+            {
+                var categories = await context.Categories
+                    .Where(c => updateTrickDto.CategoryIds.Contains(c.Id))
+                    .ToListAsync();
+
+                foreach (var category in categories)
+                {
+                    trick.Categories.Add(category);
+                }
+            }
+
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await TrickExistsAsync(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return NoContent();
+        }
+
+        // DELETE: api/Tricks/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTrick(int id)
+        {
+            var trick = await context.Tricks.FindAsync(id);
+            if (trick == null)
+            {
+                return NotFound();
+            }
+
+            context.Tricks.Remove(trick);
+            await context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private async Task<bool> TrickExistsAsync(int id)
+        {
+            return await context.Tricks.AnyAsync(e => e.Id == id);
         }
     }
 }

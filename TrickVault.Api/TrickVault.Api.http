@@ -13,9 +13,8 @@ POST {{TrickVault.Api_HostAddress}}/api/tricks
 Content-Type: application/json
 
 {
-    "Id": 3,
     "Title": "Linking Rings"
-}
+}                                   
 
 ###
 
@@ -23,15 +22,50 @@ PUT {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
 Content-Type: application/json
 
 {
-    "Id": 3,
+    "Id": 5,
     "Title": "Linking Rings",
     "Effect": "Magic shows 5 disconnected rings, then manages to magically link the rings together.",
     "Method": "Use the secret of the rings to link and unlink them.",
-    "Patter": "I have two completely separate rings.  But when I do this (rub the rings together), they become linked."
+    "Patter": "I have two completely separate rings.  But when I do this (rub the rings together), they become linked.",
+    "CategoryIds": [3, 4, 5]
 }
 
 ###
 
-DELETE {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
+# DELETE {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
+
+###
+
+########################################################
+# Categories
+########################################################
+
+GET {{TrickVault.Api_HostAddress}}/api/categories
+
+###
+
+GET {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
+
+###
+
+POST {{TrickVault.Api_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+  //Category
+}
+
+###
+
+PUT {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
+Content-Type: application/json
+
+{
+  //Category
+}
+
+###
+
+# DELETE {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
 
 ###
