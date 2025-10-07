@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using TrickVault.Api.Contracts;
 using TrickVault.Api.Data;
+using TrickVault.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionString");
 builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddControllers();
+builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+builder.Services.AddScoped<ITricksService, TricksService>();
+
+// Setup controllers to handle cyclical references
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

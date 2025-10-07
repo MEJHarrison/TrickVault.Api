@@ -8,7 +8,6 @@ namespace TrickVault.Api.Models
         public required string Name { get; set; }
         public string? Description { get; set; }
 
-        [JsonIgnore]
         public ICollection<Trick> Tricks { get; set; } = new List<Trick>();
     }
 }

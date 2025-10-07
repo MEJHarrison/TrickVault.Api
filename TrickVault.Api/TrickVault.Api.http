@@ -22,17 +22,17 @@ PUT {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
 Content-Type: application/json
 
 {
-    "Id": 5,
+    "Id": 3,
     "Title": "Linking Rings",
-    "Effect": "Magic shows 5 disconnected rings, then manages to magically link the rings together.",
+    "Effect": "Magician shows 5 disconnected rings, then manages to magically link the rings together.",
     "Method": "Use the secret of the rings to link and unlink them.",
     "Patter": "I have two completely separate rings.  But when I do this (rub the rings together), they become linked.",
-    "CategoryIds": [3, 4, 5]
+    "CategoryIds": [3, 4, 5, 10]
 }
 
 ###
 
-# DELETE {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
+DELETE {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
 
 ###
 
@@ -52,7 +52,7 @@ POST {{TrickVault.Api_HostAddress}}/api/categories
 Content-Type: application/json
 
 {
-  //Category
+  "Name": "Self-working card tricks"
 }
 
 ###
@@ -61,11 +61,12 @@ PUT {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
 Content-Type: application/json
 
 {
-  //Category
+  "Id": 10,
+  "Name": "Money Magic"
 }
 
 ###
 
-# DELETE {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
+DELETE {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
 
 ###
