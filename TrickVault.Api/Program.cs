@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TrickVault.Api.Contracts;
 using TrickVault.Api.Data;
+using TrickVault.Api.MappingProfiles;
 using TrickVault.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,12 @@ builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseSqlServ
 
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 builder.Services.AddScoped<ITricksService, TricksService>();
+
+builder.Services.AddAutoMapper(config =>
+{
+    config.AddProfile<CategoryMappingProfile>();
+    config.AddProfile<TrickMappingProfile>();
+});
 
 // Setup controllers to handle cyclical references
 builder.Services.AddControllers()

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using TrickVault.Api.Contracts;
 using TrickVault.Api.Data;
 using TrickVault.Api.DTOs.Category;
@@ -7,37 +9,23 @@ using TrickVault.Api.Models;
 
 namespace TrickVault.Api.Services
 {
-    public class TricksService(TrickVaultDbContext context) : ITricksService
+    public class TricksService(TrickVaultDbContext context, IMapper mapper) : ITricksService
     {
         public async Task<IEnumerable<GetTricksDto>> GetTricksAsync()
         {
             return await context.Tricks
                 .AsNoTracking()
-                .Select(t => new GetTricksDto(t.Id, t.Title))
+                .ProjectTo<GetTricksDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
         public async Task<GetTrickDto?> GetTrickAsync(int id)
         {
-            var trick = await context.Tricks
-                .AsNoTracking()
+            return await context.Tricks
+                .Include(t => t.Categories)
                 .Where(t => t.Id == id)
-                .Select(t => new GetTrickDto(
-                    t.Id,
-                    t.Title,
-                    t.Effect,
-                    t.Setup,
-                    t.Method,
-                    t.Patter,
-                    t.Comments,
-                    t.Credits,
-                    t.Categories
-                        .Select(c => new GetCategoryDto(c.Id, c.Name, c.Description))
-                        .ToList()
-                ))
-                .FirstOrDefaultAsync();
-
-            return trick;
+                .ProjectTo<GetTrickDto>(mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync();
         }
 
         public async Task<GetTrickDto> CreateTrickAsync(CreateTrickDto createTrickDto)
@@ -47,21 +35,11 @@ namespace TrickVault.Api.Services
                 throw new InvalidOperationException($"A trick with the name '{createTrickDto.Title}' already exists.");
             }
 
-            var trick = new Trick
-            {
-                Title = createTrickDto.Title,
-                Effect = createTrickDto.Effect,
-                Setup = createTrickDto.Setup,
-                Method = createTrickDto.Method,
-                Patter = createTrickDto.Patter,
-                Comments = createTrickDto.Comments,
-                Credits = createTrickDto.Credits,
-            };
+            var trick = mapper.Map<Trick>(createTrickDto);
 
             if (createTrickDto.CategoryIds.Any())
             {
                 var categories = await context.Categories
-                    .AsNoTracking()
                     .Where(c => createTrickDto.CategoryIds.Contains(c.Id))
                     .ToListAsync();
 
@@ -75,19 +53,7 @@ namespace TrickVault.Api.Services
 
             await context.SaveChangesAsync();
 
-            return new GetTrickDto(
-                trick.Id,
-                trick.Title,
-                trick.Effect,
-                trick.Setup,
-                trick.Method,
-                trick.Patter,
-                trick.Comments,
-                trick.Credits,
-                trick.Categories
-                    .Select(c => new GetCategoryDto(c.Id, c.Name, c.Description))
-                    .ToList()
-            );
+            return mapper.Map<GetTrickDto>(trick);
         }
 
         public async Task UpdateTrickAsync(int id, UpdateTrickDto updateTrickDto)
@@ -109,13 +75,7 @@ namespace TrickVault.Api.Services
                 throw new InvalidOperationException($"A trick with the title '{updateTrickDto.Title}' already exists.");
             }
 
-            trick.Title = updateTrickDto.Title;
-            trick.Effect = updateTrickDto.Effect;
-            trick.Setup = updateTrickDto.Setup;
-            trick.Method = updateTrickDto.Method;
-            trick.Patter = updateTrickDto.Patter;
-            trick.Comments = updateTrickDto.Comments;
-            trick.Credits = updateTrickDto.Credits;
+            mapper.Map(updateTrickDto, trick);
 
             trick.Categories.Clear();
 

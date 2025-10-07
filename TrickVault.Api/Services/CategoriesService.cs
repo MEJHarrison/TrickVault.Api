@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using TrickVault.Api.Contracts;
 using TrickVault.Api.Data;
 using TrickVault.Api.DTOs.Category;
@@ -6,25 +8,23 @@ using TrickVault.Api.Models;
 
 namespace TrickVault.Api.Services
 {
-    public class CategoriesService(TrickVaultDbContext context) : ICategoriesService
+    public class CategoriesService(TrickVaultDbContext context, IMapper mapper) : ICategoriesService
     {
         public async Task<IEnumerable<GetCategoriesDto>> GetCategoriesAsync()
         {
             return await context.Categories
                 .AsNoTracking()
-                .Select(c => new GetCategoriesDto(c.Id, c.Name, c.Description))
+                .ProjectTo<GetCategoriesDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
         public async Task<GetCategoryDto?> GetCategoryAsync(int id)
         {
-            var category = await context.Categories
+            return await context.Categories
                 .AsNoTracking()
                 .Where(c => c.Id == id)
-                .Select(c => new GetCategoryDto(c.Id, c.Name, c.Description))
+                .ProjectTo<GetCategoryDto>(mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
-
-            return category ?? null;
         }
 
         public async Task<GetCategoryDto> CreateCategoryAsync(CreateCategoryDto createCategoryDto)
@@ -34,21 +34,13 @@ namespace TrickVault.Api.Services
                 throw new InvalidOperationException($"A category with the name '{createCategoryDto.Name}' already exists.");
             }
 
-            var category = new Category
-            {
-                Name = createCategoryDto.Name,
-                Description = createCategoryDto.Description
-            };
+            var category = mapper.Map<Category>(createCategoryDto);
 
             context.Categories.Add(category);
             
             await context.SaveChangesAsync();
 
-            return new GetCategoryDto(
-                category.Id,
-                category.Name,
-                category.Description
-            );
+            return mapper.Map<GetCategoryDto>(category);
         }
 
         public async Task UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto)
@@ -69,8 +61,7 @@ namespace TrickVault.Api.Services
                 throw new InvalidOperationException($"A category with the name '{updateCategoryDto.Name}' already exists.");
             }
 
-            category.Name = updateCategoryDto.Name;
-            category.Description = updateCategoryDto.Description;
+            mapper.Map(updateCategoryDto, category);
 
             await context.SaveChangesAsync();
         }
