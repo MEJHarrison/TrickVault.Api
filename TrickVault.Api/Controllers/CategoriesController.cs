@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 using TrickVault.Api.Contracts;
 using TrickVault.Api.DTOs.Category;
 
@@ -8,29 +6,24 @@ namespace TrickVault.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController(ICategoriesService categoriesService) : ControllerBase
+    public class CategoriesController(ICategoriesService categoriesService) : BaseApiController
     {
         // GET: api/Categories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetCategoriesDto>>> GetCategories()
         {
-            var categories = await categoriesService.GetCategoriesAsync();
+            var result = await categoriesService.GetCategoriesAsync();
 
-            return Ok(categories);
+            return ToActionResult(result);
         }
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GetCategoryDto>> GetCategory(int id)
         {
-            var category = await categoriesService.GetCategoryAsync(id);
+            var result = await categoriesService.GetCategoryAsync(id);
 
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(category);
+            return ToActionResult(result);
         }
 
         // POST: api/Categories
@@ -38,12 +31,17 @@ namespace TrickVault.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<GetCategoryDto>> PostCategory(CreateCategoryDto createCategoryDto)
         {
-            var getCategoryDto = await categoriesService.CreateCategoryAsync(createCategoryDto);
+            var result = await categoriesService.CreateCategoryAsync(createCategoryDto);
+
+            if (!result.IsSuccess)
+            {
+                return MapErrorsToResponse(result.Errors);
+            }
 
             return CreatedAtAction(
                 nameof(GetCategory),
-                new { id = getCategoryDto.Id },
-                getCategoryDto
+                new { id = result.Value!.Id },
+                result.Value
             );
         }
 
@@ -52,23 +50,18 @@ namespace TrickVault.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, UpdateCategoryDto updateCategoryDto)
         {
-            if (id != updateCategoryDto.Id)
-            {
-                return BadRequest();
-            }
+            var result = await categoriesService.UpdateCategoryAsync(id, updateCategoryDto);
 
-            await categoriesService.UpdateCategoryAsync(id, updateCategoryDto);
-
-            return NoContent();
+            return ToActionResult(result);
         }
 
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            await categoriesService.DeleteCategoryAsync(id);
+            var result = await categoriesService.DeleteCategoryAsync(id);
 
-            return NoContent();
+            return ToActionResult(result);
         }
     }
 }

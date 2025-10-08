@@ -1,50 +1,46 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TrickVault.Api.Contracts;
-using TrickVault.Api.Data;
-using TrickVault.Api.DTOs.Category;
 using TrickVault.Api.DTOs.Trick;
-using TrickVault.Api.Models;
 
 namespace TrickVault.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TricksController(ITricksService tricksService) : ControllerBase
+    public class TricksController(ITricksService tricksService) : BaseApiController
     {
         // GET: api/Tricks
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetTricksDto>>> GetTricks()
         {
-            var tricks = await tricksService.GetTricksAsync();
+            var result = await tricksService.GetTricksAsync();
 
-            return Ok(tricks);
+            return ToActionResult(result);
         }
 
         // GET: api/Tricks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GetTrickDto>> GetTrick(int id)
         {
-            var trick = await tricksService.GetTrickAsync(id);
+            var result = await tricksService.GetTrickAsync(id);
 
-            if (trick == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(trick);
+            return ToActionResult(result);
         }
 
         // POST: api/Tricks
         [HttpPost]
         public async Task<ActionResult<GetTrickDto>> PostTrick(CreateTrickDto createTrickDto)
         {
-            var getTrickDto = await tricksService.CreateTrickAsync(createTrickDto);
+            var result = await tricksService.CreateTrickAsync(createTrickDto);
+
+            if (!result.IsSuccess)
+            {
+                return MapErrorsToResponse(result.Errors);
+            }
 
             return CreatedAtAction(
                 nameof(GetTrick),
-                new { id = getTrickDto.Id },
-                getTrickDto
+                new { id = result.Value!.Id },
+                result.Value
             );
         }
 
@@ -52,23 +48,18 @@ namespace TrickVault.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTrick(int id, UpdateTrickDto updateTrickDto)
         {
-            if (id != updateTrickDto.Id)
-            {
-                return BadRequest();
-            }
+            var result = await tricksService.UpdateTrickAsync(id, updateTrickDto);
 
-            await tricksService.UpdateTrickAsync(id, updateTrickDto);
-
-            return NoContent();
+            return ToActionResult(result);
         }
 
         // DELETE: api/Tricks/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTrick(int id)
         {
-            await tricksService.DeleteTrickAsync(id);
+            var result = await tricksService.DeleteTrickAsync(id);
 
-            return NoContent();
+            return ToActionResult(result);
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿using TrickVault.Api.DTOs.Category;
+using TrickVault.Api.Results;
 
 namespace TrickVault.Api.Contracts
 {
     public interface ICategoriesService
     {
-        Task<IEnumerable<GetCategoriesDto>> GetCategoriesAsync();
-        Task<GetCategoryDto?> GetCategoryAsync(int id);
-        Task<GetCategoryDto> CreateCategoryAsync(CreateCategoryDto createCategoryDto);
-        Task UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto);
-        Task DeleteCategoryAsync(int id);
+        Task<Result<IEnumerable<GetCategoriesDto>>> GetCategoriesAsync();
+        Task<Result<GetCategoryDto>> GetCategoryAsync(int id);
+        Task<Result<GetCategoryDto>> CreateCategoryAsync(CreateCategoryDto createCategoryDto);
+        Task<Result> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto);
+        Task<Result> DeleteCategoryAsync(int id);
         Task<bool> CategoryExistsAsync(int id);
         Task<bool> CategoryExistsAsync(string name);
     }
