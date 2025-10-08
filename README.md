@@ -1,0 +1,1 @@
+This ia a .NET REST API written in C#.  At this point it just tracks magic tricks and categories (card magic, coin magic, etc). There's still a lot of work to go, but the basics are starting to come together at this point.
