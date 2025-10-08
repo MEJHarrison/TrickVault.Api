@@ -1,16 +1,21 @@
 @TrickVault.Api_HostAddress = https://localhost:7002
+@json = application/json
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDI4Zjk5My1mNGJmLTRkMTgtOGI3Mi00ODJhNjA1NDAxM2YiLCJlbWFpbCI6ImFkbWluQGxvY2FsaG9zdC5jb20iLCJqdGkiOiI1MmNjMjlmNi0xN2ViLTRjNjEtOWViZi03OWZmZTk2ZTAwNWQiLCJuYW1lIjoiSGFycmlzb24sIE1hcmsiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzU5OTIzMTIxLCJpc3MiOiJUcmlja1ZhdWx0QVBJIiwiYXVkIjoiVHJpY2tWYXVsdEFQSUNsaWVudCJ9.p9efWbHUQ7U-aBKfseN8Ea2MF1-wTDtAtxipAUuZhYg
 @id=3
 
 GET {{TrickVault.Api_HostAddress}}/api/tricks
+Authorization: Bearer {{Token}}
 
 ###
 
 GET {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
+Authorization: Bearer {{Token}}
 
 ###
 
 POST {{TrickVault.Api_HostAddress}}/api/tricks
-Content-Type: application/json
+Content-Type: {{json}}
+Authorization: Bearer {{Token}}
 
 {
     "Title": "Linking Rings"
@@ -19,7 +24,8 @@ Content-Type: application/json
 ###
 
 PUT {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
-Content-Type: application/json
+Content-Type: {{json}}
+Authorization: Bearer {{Token}}
 
 {
     "Id": 3,
@@ -27,12 +33,13 @@ Content-Type: application/json
     "Effect": "Magician shows 5 disconnected rings, then manages to magically link the rings together.",
     "Method": "Use the secret of the rings to link and unlink them.",
     "Patter": "I have two completely separate rings.  But when I do this (rub the rings together), they become linked.",
-    "CategoryIds": [3, 4, 5, 10]
+    "CategoryIds": [3, 4, 5]
 }
 
 ###
 
 DELETE {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
+Authorization: Bearer {{Token}}
 
 ###
 
@@ -41,15 +48,18 @@ DELETE {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
 ########################################################
 
 GET {{TrickVault.Api_HostAddress}}/api/categories
+Authorization: Bearer {{Token}}
 
 ###
 
 GET {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
+Authorization: Bearer {{Token}}
 
 ###
 
 POST {{TrickVault.Api_HostAddress}}/api/categories
-Content-Type: application/json
+Content-Type: {{json}}
+Authorization: Bearer {{Token}}
 
 {
   "Name": "Self-working card tricks"
@@ -58,7 +68,8 @@ Content-Type: application/json
 ###
 
 PUT {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
-Content-Type: application/json
+Content-Type: {{json}}
+Authorization: Bearer {{Token}}
 
 {
   "Id": 10,
@@ -68,5 +79,53 @@ Content-Type: application/json
 ###
 
 DELETE {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
+Authorization: Bearer {{Token}}
 
 ###
+
+########################################################
+# Auth
+########################################################
+
+POST {{TrickVault.Api_HostAddress}}/api/auth/register
+Content-Type: {{json}}
+
+{
+    "email": "user@localhost.com",
+    "password": "P@ssword1",
+    "firstName": "Mark",
+    "lastName": "Harrison"
+}
+
+###
+
+POST {{TrickVault.Api_HostAddress}}/api/auth/register
+Content-Type: {{json}}
+
+{
+    "email": "admin@localhost.com",
+    "password": "P@ssword1",
+    "firstName": "Mark",
+    "lastName": "Harrison",
+    "role": "Administrator"
+}
+
+###
+
+POST {{TrickVault.Api_HostAddress}}/api/auth/login
+Content-Type: {{json}}
+
+{
+    "email": "user@localhost.com",
+    "password": "P@ssword1"
+}
+
+###
+
+POST {{TrickVault.Api_HostAddress}}/api/auth/login
+Content-Type: {{json}}
+
+{
+    "email": "admin@localhost.com",
+    "password": "P@ssword1"
+}

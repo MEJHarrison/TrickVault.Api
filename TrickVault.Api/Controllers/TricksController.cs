@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TrickVault.Api.Contracts;
 using TrickVault.Api.DTOs.Trick;
 
@@ -6,6 +7,7 @@ namespace TrickVault.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TricksController(ITricksService tricksService) : BaseApiController
     {
         // GET: api/Tricks
