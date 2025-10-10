@@ -5,12 +5,12 @@ namespace TrickVault.Api.Contracts
 {
     public interface ITricksService
     {
-        Task<Result<IEnumerable<GetTricksDto>>> GetTricksAsync();
-        Task<Result<GetTrickDto>> GetTrickAsync(int id);
-        Task<Result<GetTrickDto>> CreateTrickAsync(CreateTrickDto createTrickDto);
-        Task<Result> UpdateTrickAsync(int id, UpdateTrickDto updateTrickDto);
-        Task<Result> DeleteTrickAsync(int id);
-        Task<bool> TrickExistsAsync(int id);
-        Task<bool> TrickExistsAsync(string title);
+        Task<Result<IEnumerable<GetTricksDto>>> GetTricksAsync(string userId);
+        Task<Result<GetTrickDto>> GetTrickAsync(int id, string userId);
+        Task<Result<GetTrickDto>> CreateTrickAsync(CreateTrickDto createTrickDto, string userId);
+        Task<Result> UpdateTrickAsync(int id, UpdateTrickDto updateTrickDto, string userId);
+        Task<Result> DeleteTrickAsync(int id, string userId);
+        Task<bool> TrickExistsAsync(int id, string userId);
+        Task<bool> TrickExistsAsync(string title, string userId);
     }
 }

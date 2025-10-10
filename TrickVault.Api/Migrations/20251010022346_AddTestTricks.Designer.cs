@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrickVault.Api.Data;
 
@@ -11,9 +12,11 @@ using TrickVault.Api.Data;
 namespace TrickVault.Api.Migrations
 {
     [DbContext(typeof(TrickVaultDbContext))]
-    partial class TrickVaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251010022346_AddTestTricks")]
+    partial class AddTestTricks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -393,7 +396,6 @@ namespace TrickVault.Api.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -416,7 +418,7 @@ namespace TrickVault.Api.Migrations
                             Patter = "Look, the hat is completely empty. Except for this here ribbit!",
                             Setup = "Put rabbit in hat",
                             Title = "Pull Rabbit from Hat",
-                            UserId = "db386051-e294-4d5a-baa5-295a3254be6a"
+                            UserId = "a7fef032-3e48-4d96-bbc2-5590b37367e3"
                         },
                         new
                         {
@@ -425,7 +427,7 @@ namespace TrickVault.Api.Migrations
                             Method = "Spectator selects a card. The card is returned to the deck and the deck is then shuffled. Then through secret means (not given here), the magician is able to find the selected card.",
                             Patter = "Pick a card, any card! Show the audience. Now put it back anywhere in the deck. I'm going to shuffle the cards a few times. Now, I couldn't possibly know the location of your card, right? Yet here it is!",
                             Title = "Pick a Card",
-                            UserId = "db386051-e294-4d5a-baa5-295a3254be6a"
+                            UserId = "a7fef032-3e48-4d96-bbc2-5590b37367e3"
                         });
                 });
 
@@ -516,9 +518,7 @@ namespace TrickVault.Api.Migrations
                 {
                     b.HasOne("TrickVault.Api.Models.ApplicationUser", "User")
                         .WithMany("Tricks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

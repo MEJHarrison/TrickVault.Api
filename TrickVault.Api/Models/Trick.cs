@@ -18,7 +18,7 @@ namespace TrickVault.Api.Models
         [NotMapped]
         public List<int> CategoryIds { get; set; } = new();
 
-        //public string? UserId { get; set; } = string.Empty;
-        //public ApplicationUser? User { get; set; }
+        public required string UserId { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }

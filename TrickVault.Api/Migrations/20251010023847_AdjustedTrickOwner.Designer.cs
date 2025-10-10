@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrickVault.Api.Data;
 
@@ -11,9 +12,11 @@ using TrickVault.Api.Data;
 namespace TrickVault.Api.Migrations
 {
     [DbContext(typeof(TrickVaultDbContext))]
-    partial class TrickVaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251010023847_AdjustedTrickOwner")]
+    partial class AdjustedTrickOwner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -393,7 +396,6 @@ namespace TrickVault.Api.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -516,9 +518,7 @@ namespace TrickVault.Api.Migrations
                 {
                     b.HasOne("TrickVault.Api.Models.ApplicationUser", "User")
                         .WithMany("Tricks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
