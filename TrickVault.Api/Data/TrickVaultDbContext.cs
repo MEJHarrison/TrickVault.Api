@@ -16,21 +16,13 @@ namespace TrickVault.Api.Data
 
         public DbSet<Trick> Tricks { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<TrickCategory> TrickCategories { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-            if (UseTestData)
-            {
-                modelBuilder.Entity("TrickCategory").HasData(
-                    new { TrickId = TrickIds.PullRabbit, CategoryId = CategoryIds.ChildrensMagic },
-                    new { TrickId = TrickIds.PullRabbit, CategoryId = CategoryIds.ComedyMagic },
-                    new { TrickId = TrickIds.PickACard, CategoryId = CategoryIds.CardMagic }
-                );
-            }
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

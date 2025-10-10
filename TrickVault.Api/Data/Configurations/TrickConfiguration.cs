@@ -12,19 +12,6 @@ namespace TrickVault.Api.Data.Configurations
             builder.HasIndex(c => c.Title)
                 .IsUnique();
 
-            builder.HasMany(t => t.Categories)
-                .WithMany(c => c.Tricks)
-                .UsingEntity<Dictionary<string, object>>(
-                    "TrickCategory",
-                    j => j.HasOne<Category>().WithMany().HasForeignKey("CategoryId").HasConstraintName("FK_TrickCategory_CategoryId").OnDelete(DeleteBehavior.Cascade),
-                    j => j.HasOne<Trick>().WithMany().HasForeignKey("TrickId").HasConstraintName("FK_TrickCategory_TrickId").OnDelete(DeleteBehavior.Cascade),
-                    j =>
-                    {
-                        j.HasKey("TrickId", "CategoryId"); // composite primary key
-                        j.ToTable("TrickCategory");
-                    }
-                );
-
             if (TrickVaultDbContext.UseTestData)
             {
                 // --- Trick Seed Data (for testing purposes ONLY) ---

@@ -1,7 +1,58 @@
 @TrickVault.Api_HostAddress = https://localhost:7002
 @json = application/json
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDI4Zjk5My1mNGJmLTRkMTgtOGI3Mi00ODJhNjA1NDAxM2YiLCJlbWFpbCI6ImFkbWluQGxvY2FsaG9zdC5jb20iLCJqdGkiOiI1MmNjMjlmNi0xN2ViLTRjNjEtOWViZi03OWZmZTk2ZTAwNWQiLCJuYW1lIjoiSGFycmlzb24sIE1hcmsiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzU5OTIzMTIxLCJpc3MiOiJUcmlja1ZhdWx0QVBJIiwiYXVkIjoiVHJpY2tWYXVsdEFQSUNsaWVudCJ9.p9efWbHUQ7U-aBKfseN8Ea2MF1-wTDtAtxipAUuZhYg
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5NjI5NzE2Ny00YjJiLTRjOTAtODAxZi0zYzNjODExOWNmYjAiLCJlbWFpbCI6ImFkbWluQGxvY2FsaG9zdC5jb20iLCJqdGkiOiI3YTk4NTU2ZC00YTQzLTQzOWQtODU2ZC0zNzNiYmE4MDczODUiLCJuYW1lIjoiSGFycmlzb24sIE1hcmsiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiZXhwIjoxNzYwMDU4NjkzLCJpc3MiOiJUcmlja1ZhdWx0QVBJIiwiYXVkIjoiVHJpY2tWYXVsdEFQSUNsaWVudCJ9.1t3p7pS3694DzHFa-8LEC8-9cZO-kVrH6E-uK0aS0f8
 @id=3
+
+########################################################
+# Auth
+########################################################
+
+POST {{TrickVault.Api_HostAddress}}/api/auth/register
+Content-Type: {{json}}
+
+{
+    "email": "user@localhost.com",
+    "password": "P@ssword1",
+    "firstName": "Mark",
+    "lastName": "Harrison"
+}
+
+###
+
+POST {{TrickVault.Api_HostAddress}}/api/auth/register
+Content-Type: {{json}}
+
+{
+    "email": "admin@localhost.com",
+    "password": "P@ssword1",
+    "firstName": "Mark",
+    "lastName": "Harrison",
+    "role": "Administrator"
+}
+
+###
+
+POST {{TrickVault.Api_HostAddress}}/api/auth/login
+Content-Type: {{json}}
+
+{
+    "email": "user@localhost.com",
+    "password": "P@ssword1"
+}
+
+###
+
+POST {{TrickVault.Api_HostAddress}}/api/auth/login
+Content-Type: {{json}}
+
+{
+    "email": "admin@localhost.com",
+    "password": "P@ssword1"
+}
+
+########################################################
+# Tricks
+########################################################
 
 GET {{TrickVault.Api_HostAddress}}/api/tricks
 Authorization: Bearer {{Token}}
@@ -82,50 +133,3 @@ DELETE {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
 Authorization: Bearer {{Token}}
 
 ###
-
-########################################################
-# Auth
-########################################################
-
-POST {{TrickVault.Api_HostAddress}}/api/auth/register
-Content-Type: {{json}}
-
-{
-    "email": "user@localhost.com",
-    "password": "P@ssword1",
-    "firstName": "Mark",
-    "lastName": "Harrison"
-}
-
-###
-
-POST {{TrickVault.Api_HostAddress}}/api/auth/register
-Content-Type: {{json}}
-
-{
-    "email": "admin@localhost.com",
-    "password": "P@ssword1",
-    "firstName": "Mark",
-    "lastName": "Harrison",
-    "role": "Administrator"
-}
-
-###
-
-POST {{TrickVault.Api_HostAddress}}/api/auth/login
-Content-Type: {{json}}
-
-{
-    "email": "user@localhost.com",
-    "password": "P@ssword1"
-}
-
-###
-
-POST {{TrickVault.Api_HostAddress}}/api/auth/login
-Content-Type: {{json}}
-
-{
-    "email": "admin@localhost.com",
-    "password": "P@ssword1"
-}

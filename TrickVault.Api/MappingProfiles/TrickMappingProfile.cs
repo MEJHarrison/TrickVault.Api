@@ -10,9 +10,9 @@ namespace TrickVault.Api.MappingProfiles
         {
             CreateMap<Trick, GetTricksDto>();
             CreateMap<Trick, GetTrickDto>()
-                .ForMember(destination => destination.Categories, config => config.MapFrom(source => source.Categories));
+                .ForMember(destination => destination.Categories, config => config.MapFrom(source => source.TrickCategories.Select(tc => tc.Category)));
             CreateMap<CreateTrickDto, Trick>()
-                .ForMember(destination => destination.Categories, config => config.Ignore());
+                .ForMember(destination => destination.TrickCategories, config => config.Ignore());
         }
     }
 }

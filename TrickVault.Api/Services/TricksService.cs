@@ -25,7 +25,8 @@ namespace TrickVault.Api.Services
         public async Task<Result<GetTrickDto>> GetTrickAsync(int id)
         {
             var trick = await context.Tricks
-                .Include(t => t.Categories)
+                .Include(t => t.TrickCategories)
+                .ThenInclude(tc => tc.Category)
                 .Where(t => t.Id == id)
                 .ProjectTo<GetTrickDto>(mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
@@ -70,7 +71,8 @@ namespace TrickVault.Api.Services
             }
 
             var trick = await context.Tricks
-                .Include(t => t.Categories)
+                .Include(t => t.TrickCategories)
+                .ThenInclude(tc => tc.Category)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (trick is null)
@@ -88,7 +90,7 @@ namespace TrickVault.Api.Services
 
             mapper.Map(updateTrickDto, trick);
 
-            trick.Categories.Clear();
+            trick.TrickCategories.Clear();
 
             var categoryResult = await AssignCategoriesAsync(updateTrickDto.CategoryIds, trick);
             if (!categoryResult.IsSuccess)
@@ -148,7 +150,12 @@ namespace TrickVault.Api.Services
 
             foreach (var category in categories)
             {
-                trick.Categories.Add(category);
+                trick.TrickCategories.Add(new TrickCategory
+                {
+                    TrickId = trick.Id,
+                    CategoryId = category.Id,
+                    Category = category
+                });
             }
 
             return Result.Success();

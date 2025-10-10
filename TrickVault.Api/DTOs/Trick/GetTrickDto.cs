@@ -2,16 +2,17 @@
 
 namespace TrickVault.Api.DTOs.Trick
 {
-    public record GetTrickDto(
-        int Id,
-        string Title,
-        string? Effect,
-        string? Setup,
-        string? Method,
-        string? Patter,
-        string? Comments,
-        string? Credits,
+    public record GetTrickDto
+    {
+        public int Id { get; init; }
+        public string Title { get; init; } = string.Empty;
+        public string? Effect { get; init; }
+        public string? Setup { get; init; }
+        public string? Method { get; init; }
+        public string? Patter { get; init; }
+        public string? Comments { get; init; }
+        public string? Credits { get; init; }
 
-        List<GetCategoryDto> Categories
-    );
+        public List<GetCategoryDto> Categories { get; init; } = new List<GetCategoryDto>();
+    };
 }
