@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using TrickVault.Api.Constants;
 using TrickVault.Api.Contracts;
-using TrickVault.Api.Data;
 using TrickVault.Api.DTOs.Auth;
-using TrickVault.Api.Results;
 
 namespace TrickVault.Api.Controllers
 {

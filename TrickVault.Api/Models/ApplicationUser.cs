@@ -10,5 +10,7 @@ namespace TrickVault.Api.Models
 
         [NotMapped]
         public string FullName => $"{LastName}, {FirstName}";
+
+        //public ICollection<Trick> Tricks { get; set; } = new List<Trick>();
     }
 }

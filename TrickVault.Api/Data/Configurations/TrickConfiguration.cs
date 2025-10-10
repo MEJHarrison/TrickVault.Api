@@ -12,6 +12,11 @@ namespace TrickVault.Api.Data.Configurations
             builder.HasIndex(c => c.Title)
                 .IsUnique();
 
+            //builder.HasOne(t => t.User)
+            //    .WithMany(u => u.Tricks)
+            //    .HasForeignKey(t => t.UserId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
             if (TrickVaultDbContext.UseTestData)
             {
                 // --- Trick Seed Data (for testing purposes ONLY) ---
@@ -25,7 +30,8 @@ namespace TrickVault.Api.Data.Configurations
                         Method = "Magician shows an empty hat, then reaches into secret compartment and removes hidden rabbit",
                         Patter = "Look, the hat is completely empty. Except for this here ribbit!",
                         Comments = "This is great with children.",
-                        Credits = "Many poor magicians."
+                        Credits = "Many poor magicians.",
+                        //UserId = "a7fef032-3e48-4d96-bbc2-5590b37367e3"
                     },
                     new Trick
                     {
@@ -33,7 +39,8 @@ namespace TrickVault.Api.Data.Configurations
                         Title = "Pick a Card",
                         Effect = "Magician has audience member select a random card. The card is shuffled back into the deck. Then the magician finds the selected card.",
                         Method = "Spectator selects a card. The card is returned to the deck and the deck is then shuffled. Then through secret means (not given here), the magician is able to find the selected card.",
-                        Patter = "Pick a card, any card! Show the audience. Now put it back anywhere in the deck. I'm going to shuffle the cards a few times. Now, I couldn't possibly know the location of your card, right? Yet here it is!"
+                        Patter = "Pick a card, any card! Show the audience. Now put it back anywhere in the deck. I'm going to shuffle the cards a few times. Now, I couldn't possibly know the location of your card, right? Yet here it is!",
+                        //UserId = "a7fef032-3e48-4d96-bbc2-5590b37367e3"
                     }
                 );
             }
