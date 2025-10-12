@@ -14,7 +14,7 @@ namespace TrickVault.Api.Models
         public string? Credits { get; set; }
 
         public ICollection<TrickCategory> TrickCategories { get; set; } = new List<TrickCategory>();
-        
+
         [NotMapped]
         public List<int> CategoryIds { get; set; } = new();
 

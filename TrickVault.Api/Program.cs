@@ -15,8 +15,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Configure Connection String & setup DbContext
-var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionString");
-builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseSqlServer(connectionString));
+var isMac = OperatingSystem.IsMacOS();
+
+if (isMac)
+{
+    var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionStringPostgres");
+
+    builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseNpgsql(connectionString));
+}
+else
+{
+    var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionStringSqlServer");
+
+    builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseSqlServer(connectionString));
+}
 
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddRoles<IdentityRole>()

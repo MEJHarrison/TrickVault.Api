@@ -28,12 +28,11 @@ namespace TrickVault.Api.Data.Configurations
             if (TrickVaultDbContext.UseTestData)
             {
                 builder.HasData(
-                    new { TrickId = TrickIds.PullRabbit, CategoryId = CategoryIds.ChildrensMagic },
-                    new { TrickId = TrickIds.PullRabbit, CategoryId = CategoryIds.ComedyMagic },
-                    new { TrickId = TrickIds.PickACard, CategoryId = CategoryIds.CardMagic }
+                    new TrickCategory { TrickId = TrickIds.PullRabbit, CategoryId = CategoryIds.ChildrensMagic },
+                    new TrickCategory { TrickId = TrickIds.PullRabbit, CategoryId = CategoryIds.ComedyMagic },
+                    new TrickCategory { TrickId = TrickIds.PickACard, CategoryId = CategoryIds.CardMagic }
                 );
             }
-
         }
     }
 }

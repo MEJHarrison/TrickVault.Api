@@ -1,13 +1,13 @@
-@TrickVault.Api_HostAddress = https://localhost:7002
-@json = application/json
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZTZhOTgxYy1hZThmLTQ3YTQtYTcyMy0xNTJhMTAwMmU0YzEiLCJlbWFpbCI6InVzZXIyQGxvY2FsaG9zdC5jb20iLCJqdGkiOiI4ZDM1MWE4OC01MDBhLTQwMTktODU3OS0wZGJjYTM3M2VhNzkiLCJuYW1lIjoiVXNlciwgVGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3NjAwNjkxMjIsImlzcyI6IlRyaWNrVmF1bHRBUEkiLCJhdWQiOiJUcmlja1ZhdWx0QVBJQ2xpZW50In0.8Lfm8uJ9eGi8cZLjWCXmj1QbJ9NHLmUtEKZX1S1FOCw
+@TrickVaultApi_HostAddress=https://localhost:7002
+@json=application/json
+@Token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZTZhOTgxYy1hZThmLTQ3YTQtYTcyMy0xNTJhMTAwMmU0YzEiLCJlbWFpbCI6InVzZXIyQGxvY2FsaG9zdC5jb20iLCJqdGkiOiI4ZDM1MWE4OC01MDBhLTQwMTktODU3OS0wZGJjYTM3M2VhNzkiLCJuYW1lIjoiVXNlciwgVGVzdCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3NjAwNjkxMjIsImlzcyI6IlRyaWNrVmF1bHRBUEkiLCJhdWQiOiJUcmlja1ZhdWx0QVBJQ2xpZW50In0.8Lfm8uJ9eGi8cZLjWCXmj1QbJ9NHLmUtEKZX1S1FOCw
 @id=3
 
 ########################################################
 # Auth
 ########################################################
 
-POST {{TrickVault.Api_HostAddress}}/api/auth/register
+POST {{TrickVaultApi_HostAddress}}/api/auth/register
 Content-Type: {{json}}
 
 {
@@ -19,7 +19,7 @@ Content-Type: {{json}}
 
 ###
 
-POST {{TrickVault.Api_HostAddress}}/api/auth/register
+POST {{TrickVaultApi_HostAddress}}/api/auth/register
 Content-Type: {{json}}
 
 {
@@ -32,7 +32,7 @@ Content-Type: {{json}}
 
 ###
 
-POST {{TrickVault.Api_HostAddress}}/api/auth/login
+POST {{TrickVaultApi_HostAddress}}/api/auth/login
 Content-Type: {{json}}
 
 {
@@ -42,7 +42,7 @@ Content-Type: {{json}}
 
 ###
 
-POST {{TrickVault.Api_HostAddress}}/api/auth/login
+POST {{TrickVaultApi_HostAddress}}/api/auth/login
 Content-Type: {{json}}
 
 {
@@ -54,17 +54,17 @@ Content-Type: {{json}}
 # Tricks
 ########################################################
 
-GET {{TrickVault.Api_HostAddress}}/api/tricks
+GET {{TrickVaultApi_HostAddress}}/api/tricks
 Authorization: Bearer {{Token}}
 
 ###
 
-GET {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
+GET {{TrickVaultApi_HostAddress}}/api/tricks/{{id}}
 Authorization: Bearer {{Token}}
 
 ###
 
-POST {{TrickVault.Api_HostAddress}}/api/tricks
+POST {{TrickVaultApi_HostAddress}}/api/tricks
 Content-Type: {{json}}
 Authorization: Bearer {{Token}}
 
@@ -74,7 +74,7 @@ Authorization: Bearer {{Token}}
 
 ###
 
-PUT {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
+PUT {{TrickVaultApi_HostAddress}}/api/tricks/{{id}}
 Content-Type: {{json}}
 Authorization: Bearer {{Token}}
 
@@ -89,7 +89,7 @@ Authorization: Bearer {{Token}}
 
 ###
 
-DELETE {{TrickVault.Api_HostAddress}}/api/tricks/{{id}}
+DELETE {{TrickVaultApi_HostAddress}}/api/tricks/{{id}}
 Authorization: Bearer {{Token}}
 
 ###
@@ -98,17 +98,17 @@ Authorization: Bearer {{Token}}
 # Categories
 ########################################################
 
-GET {{TrickVault.Api_HostAddress}}/api/categories
+GET {{TrickVaultApi_HostAddress}}/api/categories
 Authorization: Bearer {{Token}}
 
 ###
 
-GET {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
+GET {{TrickVaultApi_HostAddress}}/api/categories/{{id}}
 Authorization: Bearer {{Token}}
 
 ###
 
-POST {{TrickVault.Api_HostAddress}}/api/categories
+POST {{TrickVaultApi_HostAddress}}/api/categories
 Content-Type: {{json}}
 Authorization: Bearer {{Token}}
 
@@ -118,7 +118,7 @@ Authorization: Bearer {{Token}}
 
 ###
 
-PUT {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
+PUT {{TrickVaultApi_HostAddress}}/api/categories/{{id}}
 Content-Type: {{json}}
 Authorization: Bearer {{Token}}
 
@@ -129,7 +129,7 @@ Authorization: Bearer {{Token}}
 
 ###
 
-DELETE {{TrickVault.Api_HostAddress}}/api/categories/{{id}}
+DELETE {{TrickVaultApi_HostAddress}}/api/categories/{{id}}
 Authorization: Bearer {{Token}}
 
 ###

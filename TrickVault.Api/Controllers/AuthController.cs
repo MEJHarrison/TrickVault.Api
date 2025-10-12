@@ -23,7 +23,8 @@ namespace TrickVault.Api.Controllers
         {
             var result = await usersService.LoginAsync(loginUserDto);
 
-            return ToActionResult(result);
+            // return ToActionResult(result);
+            return Ok(new { token = result.Value });
         }
     }
 }

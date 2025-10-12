@@ -49,7 +49,6 @@ namespace TrickVault.Api.Services
                     .Select(e => new Error(ErrorCodes.BadRequest, e.Description))
                     .ToArray();
 
-                // Optional: rollback user creation if role assignment fails
                 await userManager.DeleteAsync(user);
 
                 return Result<RegisteredUserDto>.Failure(errors);
@@ -96,7 +95,7 @@ namespace TrickVault.Api.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Name, user.FullName)
             };
