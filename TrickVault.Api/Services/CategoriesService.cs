@@ -10,7 +10,7 @@ using TrickVault.Api.Results;
 
 namespace TrickVault.Api.Services
 {
-    public class CategoriesService(TrickVaultDbContext context, IMapper mapper) : ICategoriesService
+    public class CategoriesService(TrickVaultDbContextBase context, IMapper mapper) : ICategoriesService
     {
         public async Task<Result<IEnumerable<GetCategoriesDto>>> GetCategoriesAsync()
         {

@@ -8,7 +8,7 @@ namespace TrickVault.Api.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder)
         {
-            if (!TrickVaultDbContext.UseTestData)
+            if (!TrickVaultDbContextBase.UseTestData)
             {
                 return;
             }

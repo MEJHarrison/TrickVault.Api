@@ -25,7 +25,7 @@ namespace TrickVault.Api.Data.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            if (TrickVaultDbContext.UseTestData)
+            if (TrickVaultDbContextBase.UseTestData)
             {
                 builder.HasData(
                     new TrickCategory { TrickId = TrickIds.PullRabbit, CategoryId = CategoryIds.ChildrensMagic },

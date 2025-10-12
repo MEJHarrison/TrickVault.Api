@@ -10,7 +10,7 @@ using TrickVault.Api.Results;
 
 namespace TrickVault.Api.Services
 {
-    public class TricksService(TrickVaultDbContext context, IMapper mapper) : ITricksService
+    public class TricksService(TrickVaultDbContextBase context, IMapper mapper) : ITricksService
     {
         public async Task<Result<IEnumerable<GetTricksDto>>> GetTricksAsync(string userId)
         {

@@ -9,11 +9,11 @@ using TrickVault.Api.Data;
 
 #nullable disable
 
-namespace TrickVault.Api.Migrations.SqlServer
+namespace TrickVault.Api.Data.Migrations.SqlServer
 {
-    [DbContext(typeof(TrickVaultDbContext))]
-    [Migration("20251012101221_InitialMigrationSqlServer")]
-    partial class InitialMigrationSqlServer
+    [DbContext(typeof(TrickVaultSqlServerContext))]
+    [Migration("20251012210258_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

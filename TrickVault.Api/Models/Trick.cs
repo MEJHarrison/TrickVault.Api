@@ -19,6 +19,6 @@ namespace TrickVault.Api.Models
         public List<int> CategoryIds { get; set; } = new();
 
         public required string UserId { get; set; }
-        public ApplicationUser? User { get; set; }
+        public required ApplicationUser User { get; set; }
     }
 }

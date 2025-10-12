@@ -14,25 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// Configure Connection String & setup DbContext
-var isMac = OperatingSystem.IsMacOS();
-
-if (isMac)
-{
-    var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionStringPostgres");
-
-    builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseNpgsql(connectionString));
-}
-else
-{
-    var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionStringSqlServer");
-
-    builder.Services.AddDbContext<TrickVaultDbContext>(options => options.UseSqlServer(connectionString));
-}
-
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<TrickVaultDbContext>();
+ConfigureDatabaseServices(builder);
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>() ?? new JwtSettings();
@@ -100,3 +82,38 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static void ConfigureDatabaseServices(WebApplicationBuilder builder)
+{
+    // Configure Connection String & setup DbContext
+    var isMac = OperatingSystem.IsMacOS();
+
+    if (isMac)
+    {
+        var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionStringPostgres");
+
+        builder.Services.AddDbContext<TrickVaultPostgresContext>(options =>
+            options.UseNpgsql(connectionString, b => b.MigrationsAssembly(typeof(TrickVaultPostgresContext).Assembly.FullName)));
+
+        builder.Services.AddScoped<TrickVaultDbContextBase>(provider =>
+            provider.GetRequiredService<TrickVaultPostgresContext>());
+
+        builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<TrickVaultPostgresContext>();
+    }
+    else
+    {
+        var connectionString = builder.Configuration.GetConnectionString("TrickVaultConnectionStringSqlServer");
+
+        builder.Services.AddDbContext<TrickVaultSqlServerContext>(options =>
+            options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(TrickVaultSqlServerContext).Assembly.FullName)));
+
+        builder.Services.AddScoped<TrickVaultDbContextBase>(provider =>
+            provider.GetRequiredService<TrickVaultSqlServerContext>());
+
+        builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<TrickVaultSqlServerContext>();
+    }
+}
