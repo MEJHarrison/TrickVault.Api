@@ -5,7 +5,8 @@ namespace TrickVault.Api.Contracts
 {
     public interface IUsersService
     {
-        Task<Result<string>> LoginAsync(LoginUserDto loginUserDto);
         Task<Result<RegisteredUserDto>> RegisterAsync(RegisterUserDto registerUserDto);
+        Task<Result<AuthResponseDto>> LoginAsync(LoginUserDto loginUserDto);
+        Task<Result<AuthResponseDto>> RefreshTokenAsync(string refreshToken);
     }
 }

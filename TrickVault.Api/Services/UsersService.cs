@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using TrickVault.Api.Constants;
 using TrickVault.Api.Contracts;
@@ -68,25 +69,61 @@ namespace TrickVault.Api.Services
             return Result<RegisteredUserDto>.Success(registeredUser);
         }
 
-        public async Task<Result<string>> LoginAsync(LoginUserDto loginUserDto)
+        public async Task<Result<AuthResponseDto>> LoginAsync(LoginUserDto loginUserDto)
         {
             var user = await userManager.FindByEmailAsync(loginUserDto.Email);
 
             if (user is null)
             {
-                return Result<string>.Failure(new Error(ErrorCodes.BadRequest, "Invalid Credentials"));
+                return Result<AuthResponseDto>.Failure(new Error(ErrorCodes.Unauthorized, "Invalid Credentials"));
             }
 
             var isPasswordValid = await userManager.CheckPasswordAsync(user, loginUserDto.Password);
 
             if (!isPasswordValid)
             {
-                return Result<string>.Failure(new Error(ErrorCodes.BadRequest, "Invalid Credentials"));
+                return Result<AuthResponseDto>.Failure(new Error(ErrorCodes.Unauthorized, "Invalid Credentials"));
             }
 
-            var token = await GenerateToken(user);
+            var accessToken = await GenerateToken(user);
+            var refreshToken = GenerateRefreshToken();
 
-            return Result<string>.Success(token);
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenDurationInDays);
+
+            await userManager.UpdateAsync(user);
+
+            return Result<AuthResponseDto>.Success(new AuthResponseDto
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            });
+        }
+
+        public async Task<Result<AuthResponseDto>> RefreshTokenAsync(string refreshToken)
+        {
+            var user = userManager
+                .Users
+                .FirstOrDefault(u => u.RefreshToken == refreshToken);
+
+            if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return Result<AuthResponseDto>.Failure(new Error(ErrorCodes.Unauthorized, "Invalid or expired refresh token"));
+            }
+
+            var newAccessToken = await GenerateToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenDurationInDays);
+
+            await userManager.UpdateAsync(user);
+
+            return Result<AuthResponseDto>.Success(new AuthResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            });
         }
 
         private async Task<string> GenerateToken(ApplicationUser user)
@@ -122,5 +159,16 @@ namespace TrickVault.Api.Services
             // Return token value
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        private static string GenerateRefreshToken()
+        {
+            var randomBytes = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+
+            rng.GetBytes(randomBytes);
+
+            return Convert.ToBase64String(randomBytes);
+        }
+
     }
 }

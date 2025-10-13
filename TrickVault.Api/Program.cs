@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TrickVault.Api.Constants;
 using TrickVault.Api.Contracts;
 using TrickVault.Api.Data;
 using TrickVault.Api.MappingProfiles;
 using TrickVault.Api.Models;
 using TrickVault.Api.Models.Configuration;
+using TrickVault.Api.Results;
 using TrickVault.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +42,19 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
             ClockSkew = TimeSpan.Zero
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                if (context.Exception is SecurityTokenExpiredException)
+                {
+                    context.Response.Headers.Append("Token-Expired", "true");
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -90,6 +105,10 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowReactDevServer");
 
+app.UseAuthentication();
+
+app.UseJwtExpiredHandler();
+
 app.UseAuthorization();
 
 app.MapControllers();
@@ -128,5 +147,40 @@ static void ConfigureDatabaseServices(WebApplicationBuilder builder)
         builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<TrickVaultSqlServerContext>();
+    }
+}
+
+public class JwtExpiredMiddleware
+{
+    private readonly RequestDelegate _next;
+    public JwtExpiredMiddleware(RequestDelegate next) => _next = next;
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        await _next(context);
+
+        if (context.Response.StatusCode == StatusCodes.Status401Unauthorized &&
+            context.Response.Headers.TryGetValue("Token-Expired", out var _))
+        {
+            if (!context.Response.HasStarted)
+            {
+                context.Response.Clear();
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    error = "Token has expired. Please refresh your session."
+                });
+            }
+        }
+    }
+}
+
+public static class MiddlewareExtensions
+{
+    public static IApplicationBuilder UseJwtExpiredHandler(this IApplicationBuilder app)
+    {
+        return app.UseMiddleware<JwtExpiredMiddleware>();
     }
 }

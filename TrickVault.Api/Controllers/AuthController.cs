@@ -11,7 +11,7 @@ namespace TrickVault.Api.Controllers
     public class AuthController(IUsersService usersService) : BaseApiController
     {
         [HttpPost("register")]
-        public async Task<ActionResult<RegisteredUserDto>> Register(RegisterUserDto registerUserDto)
+        public async Task<ActionResult<RegisteredUserDto>> Register([FromBody] RegisterUserDto registerUserDto)
         {
             var result = await usersService.RegisterAsync(registerUserDto);
 
@@ -19,12 +19,19 @@ namespace TrickVault.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(LoginUserDto loginUserDto)
+        public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginUserDto loginUserDto)
         {
             var result = await usersService.LoginAsync(loginUserDto);
 
-            // return ToActionResult(result);
-            return Ok(new { token = result.Value });
+            return ToActionResult(result);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<ActionResult<AuthResponseDto>> RefreshToken([FromBody] RefreshTokenRequestDto refreshTokenRequestDto)
+        {
+            var result = await usersService.RefreshTokenAsync(refreshTokenRequestDto.RefreshToken);
+
+            return ToActionResult(result);
         }
     }
 }

@@ -12,5 +12,8 @@ namespace TrickVault.Api.Models
         public string FullName => $"{LastName}, {FirstName}";
 
         public ICollection<Trick> Tricks { get; set; } = new List<Trick>();
+
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }
