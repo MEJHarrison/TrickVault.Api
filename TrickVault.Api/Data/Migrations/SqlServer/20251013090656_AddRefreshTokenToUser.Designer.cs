@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrickVault.Api.Data;
 
@@ -11,9 +12,11 @@ using TrickVault.Api.Data;
 namespace TrickVault.Api.Data.Migrations.SqlServer
 {
     [DbContext(typeof(TrickVaultSqlServerContext))]
-    partial class TrickVaultSqlServerContextModelSnapshot : ModelSnapshot
+    [Migration("20251013090656_AddRefreshTokenToUser")]
+    partial class AddRefreshTokenToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
