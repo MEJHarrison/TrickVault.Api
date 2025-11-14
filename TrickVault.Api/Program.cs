@@ -50,7 +50,26 @@ builder.Services.AddAuthentication(options =>
             {
                 if (context.Exception is SecurityTokenExpiredException)
                 {
-                    context.Response.Headers.Append("Token-Expired", "true");
+                    context.Response.OnStarting(() =>
+                    {
+                        context.Response.Headers["Token-Expired"] = "true";
+
+                        return Task.CompletedTask;
+                    });
+                }
+
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                if (context.AuthenticateFailure is SecurityTokenExpiredException)
+                {
+                    context.Response.OnStarting(() =>
+                    {
+                        context.Response.Headers["Token-Expired"] = "true";
+
+                        return Task.CompletedTask;
+                    });
                 }
 
                 return Task.CompletedTask;
@@ -88,6 +107,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()
+            .WithExposedHeaders("Token-Expired")
         );
 });
 
